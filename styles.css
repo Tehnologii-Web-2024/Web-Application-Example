@@ -1,0 +1,137 @@
+/* General Styling */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+header {
+  background-color: #0077cc;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+main {
+  display: flex;
+  flex-grow: 1;
+  margin: 1rem;
+  gap: 1.5rem;
+}
+
+aside {
+  width: 25%;
+  background-color: #f4f4f4;
+  padding: 1rem;
+  border-right: 2px solid #ddd;
+}
+
+#cities ul {
+  list-style: none;
+  padding: 0;
+}
+
+#cities li {
+  padding: 0.5rem;
+  margin: 0.5rem 0;
+  cursor: pointer;
+  background-color: #e9e9e9;
+  border-radius: 5px;
+  text-align: center;
+  transition: background-color 0.3s;
+}
+
+#cities li:hover {
+  background-color: #d0d0d0;
+}
+
+#content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#map-container {
+  height: 350px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+#map-container iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* POI Section Styling */
+#poi-section {
+  padding: 1rem;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+#poi-list {
+  list-style: none;
+  padding: 0;
+}
+
+#poi-list li {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+#poi-list img {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+
+/* Add POI Form Styling */
+#add-poi-form {
+  margin-top: 2rem;
+}
+
+#add-poi-form form {
+  display: flex;
+  flex-direction: column;
+}
+
+#add-poi-form label {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+#add-poi-form input,
+#add-poi-form textarea,
+#add-poi-form button {
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+#add-poi-form button {
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#add-poi-form button:hover {
+  background-color: #005999;
+}

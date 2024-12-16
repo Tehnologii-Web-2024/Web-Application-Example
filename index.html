@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cities & Points of Interest</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Cities & Points of Interest</h1>
+    </header>
+    <main>
+      <aside id="cities-list">
+        <h2>Cities</h2>
+        <ul id="cities"></ul>
+      </aside>
+
+      <div id="content">
+        <div id="map-container"></div>
+        <!-- Placeholder for the map -->
+        <section id="poi-section">
+          <h2>Points of Interest</h2>
+          <ul id="poi-list"></ul>
+          <div id="add-poi-form">
+            <h3>Add a New Point of Interest</h3>
+            <form>
+              <label for="poi-name">Name:</label>
+              <input type="text" id="poi-name" required />
+              <label for="poi-details">Details:</label>
+              <textarea id="poi-details" required></textarea>
+              <label for="poi-location">Location:</label>
+              <input type="text" id="poi-location" required />
+              <label for="poi-image">Image:</label>
+              <input type="text" id="poi-image" required />
+              <button type="submit">Add Point of Interest</button>
+            </form>
+          </div>
+        </section>
+      </div>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>
