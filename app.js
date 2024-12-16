@@ -75,16 +75,39 @@ const controller = {
     view.bindAddPoi();
   },
 
-  setCity(cityName) {
+  async setCity(cityName) {
     model.currentCity = model.cities.find((city) => city.name === cityName);
     view.renderCityMap(); // Show the selected city's map
     view.renderPoi(); // Show points of interest
+    if (model.currentCity) {
+      const [latitude, longitude] = model.currentCity.gps
+        .split(",")
+        .map((coord) => parseFloat(coord.trim()));
+      const temperature = await controller.fetchCurrentTemperature(
+        latitude,
+        longitude
+      );
+      view.renderCityDetails({ ...model.currentCity, temperature });
+    }
   },
 
   addPoi(newPoi) {
     if (model.currentCity) {
       model.currentCity.poi.push(newPoi);
       view.renderPoi();
+    }
+  },
+
+  async fetchCurrentTemperature(latitude, longitude) {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch weather data");
+      const data = await response.json();
+      return data.current_weather.temperature;
+    } catch (error) {
+      console.error("Error fetching temperature:", error.message);
+      return null;
     }
   },
 };
@@ -115,7 +138,6 @@ const view = {
 
     const { gps, name } = model.currentCity || {};
     if (gps) {
-      const romaniaCenter = "45.9432,24.9668"; // Center coordinates for Romania
       document.getElementById("map-container").innerHTML = `
       <iframe
         src="https://www.openstreetmap.org/export/embed.html?bbox=20,43,30,49&layer=mapnik&marker=${gps}"
@@ -152,6 +174,18 @@ const view = {
         controller.setCity(e.target.dataset.cityName);
       }
     });
+  },
+
+  renderCityDetails(cityData) {
+    const cityHeader = document.getElementById("city-header");
+    cityHeader.innerHTML = `
+      <h2>${cityData.name}</h2>
+      <p>Current Temperature: ${
+        cityData.temperature !== undefined
+          ? cityData.temperature + "°C"
+          : "Unavailable"
+      }</p>
+    `;
   },
 
   bindAddPoi() {
