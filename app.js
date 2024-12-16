@@ -80,6 +80,48 @@ const controller = {
       return null;
     }
   },
+
+  async addPoi(newPoi) {
+    if (model.currentCity) {
+      const cityId = model.currentCity.id;
+      try {
+        const response = await fetch(`${API_URL}/${cityId}/poi`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newPoi),
+        });
+        if (!response.ok) throw new Error("Failed to add POI");
+
+        const createdPoi = await response.json();
+        model.currentCity.poi.push(createdPoi); // Update the model
+        view.renderPoi(); // Update the view
+      } catch (error) {
+        console.error("Error adding POI:", error.message);
+        alert("Unable to add the POI. Please try again.");
+      }
+    }
+  },
+
+  async deletePoi(poiId) {
+    if (model.currentCity) {
+      const cityId = model.currentCity.id;
+      try {
+        const response = await fetch(`${API_URL}/${cityId}/poi/${poiId}`, {
+          method: "DELETE",
+        });
+        if (!response.ok) throw new Error("Failed to delete POI");
+
+        // Remove POI from the model
+        model.currentCity.poi = model.currentCity.poi.filter(
+          (poi) => poi.id !== poiId
+        );
+        view.renderPoi(); // Update the view
+      } catch (error) {
+        console.error("Error deleting POI:", error.message);
+        alert("Unable to delete the POI. Please try again.");
+      }
+    }
+  },
 };
 
 // ---- View ----
@@ -131,8 +173,16 @@ const view = {
           Details: ${poi.details}<br>
           Location: ${poi.location}<br>
           <img src="${poi.image}" alt="${poi.name}">
+          <button class="delete-poi-btn" data-poi-id="${poi.id}">Delete</button>
         `;
         poiList.appendChild(poiItem);
+      });
+      // Bind delete buttons
+      document.querySelectorAll(".delete-poi-btn").forEach((button) => {
+        button.addEventListener("click", (e) => {
+          const poiId = e.target.dataset.poiId;
+          controller.deletePoi(poiId);
+        });
       });
     }
   },

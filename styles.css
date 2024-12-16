@@ -135,3 +135,38 @@ aside {
 #add-poi-form button:hover {
   background-color: #005999;
 }
+
+/* POI Delete Button Styling */
+.delete-poi-btn {
+  background-color: #ff4d4f; /* Red for delete action */
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.delete-poi-btn:hover {
+  background-color: #cc0000; /* Darker red on hover */
+  transform: scale(1.05); /* Slight zoom on hover */
+}
+
+.delete-poi-btn:active {
+  background-color: #990000; /* Even darker red on click */
+  transform: scale(0.95); /* Slight shrink on click */
+}
+
+/* Add spacing between POI elements and the delete button */
+#poi-list li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+
+.delete-poi-btn {
+  align-self: flex-start; /* Align the button to the left */
+  margin-top: 0.5rem; /* Add some space between the button and the content */
+}
