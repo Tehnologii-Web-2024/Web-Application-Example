@@ -1,92 +1,49 @@
+const API_URL = "https://6760a8686be7889dc35e8feb.mockapi.io/cities";
+
 // ---- Data Model ----
 // This represents the data for cities and their points of interest.
 const model = {
-  cities: [
-    {
-      name: "Bucharest",
-      gps: "44.439663, 26.096306", // GPS coordinates for the city center
-      poi: [
-        {
-          name: "Parliament Palace",
-          details: "The heaviest building in the world.",
-          location: "Sector 5",
-          image:
-            "https://cdn-imgix.headout.com/media/images/a6a72403763139d887e1e684bb5375d4-14364-0000s-0004-AdobeStock-221553573.jpg?auto=format&w=1222.3999999999999&h=687.6&q=90&fit=crop&ar=16%3A9&crop=faces",
-        },
-        {
-          name: "Herăstrău Park",
-          details: "A beautiful park with a large lake.",
-          location: "Sector 1",
-          image:
-            "https://s.inyourpocket.com/img/text/romania/bucharest/1-herastrau-park.jpg",
-        },
-      ],
-    },
-    {
-      name: "Cluj-Napoca",
-      gps: "46.7712, 23.6236", // GPS coordinates for the city center
-      poi: [
-        {
-          name: "Union Square",
-          details: "A central square surrounded by landmarks.",
-          location: "City Center",
-          image:
-            "https://visitcluj.ro/wp-content/uploads/2021/02/20210521_141222-scaled.jpg",
-        },
-        {
-          name: "Botanical Garden",
-          details: "A lush green area perfect for relaxation.",
-          location: "Gheorgheni",
-          image:
-            "https://upload.wikimedia.org/wikipedia/commons/4/4c/Cluj-Napoca_Botanical_Garden_-_Japanese_Garden.jpg",
-        },
-      ],
-    },
-    {
-      name: "Brașov",
-      gps: "45.657974, 25.601198", // GPS coordinates for the city center
-      poi: [
-        {
-          name: "Black Church",
-          details: "A Gothic church and one of Brașov's main landmarks.",
-          location: "City Center",
-          image:
-            "https://www.romaniajournal.ro/wp-content/uploads/2015/07/Biserica-Neagra-Brasov4.jpg",
-        },
-        {
-          name: "Tampa Mountain",
-          details: "A small mountain with great views of the city.",
-          location: "City Center",
-          image:
-            "https://bags-always-packed.com/wp-content/uploads/2023/06/Walking-and-Hiking-route-for-Tampa-Mountain-Peak.jpg",
-        },
-      ],
-    },
-  ],
+  cities: [],
   currentCity: null, // Tracks the currently selected city
 };
 
 // ---- Controller ----
 // This manages user interaction and updates the view/model.
 const controller = {
-  init() {
+  async init() {
+    await this.loadCities(); // Fetch cities from the API
     view.renderCities();
     view.bindCityClick();
     view.bindAddPoi();
   },
 
+  async loadCities() {
+    try {
+      const response = await fetch(API_URL);
+      if (!response.ok) throw new Error("Failed to fetch cities");
+
+      const cities = await response.json();
+      model.cities = cities; // Store the fetched cities in the model
+    } catch (error) {
+      console.error("Error loading cities:", error.message);
+      alert("Unable to load cities. Please try again later.");
+    }
+  },
+
   async setCity(cityName) {
     model.currentCity = model.cities.find((city) => city.name === cityName);
-    view.renderCityMap(); // Show the selected city's map
-    view.renderPoi(); // Show points of interest
+
     if (model.currentCity) {
-      const [latitude, longitude] = model.currentCity.gps
-        .split(",")
-        .map((coord) => parseFloat(coord.trim()));
+      await this.loadCityPOIs(model.currentCity.id);
+
+      const [latitude, longitude] = model.currentCity.gps;
       const temperature = await controller.fetchCurrentTemperature(
         latitude,
         longitude
       );
+      view.renderCityMap(); // Show the selected city's map
+      view.renderPoi(); // Show points of interest
+
       view.renderCityDetails({ ...model.currentCity, temperature });
     }
   },
@@ -95,6 +52,19 @@ const controller = {
     if (model.currentCity) {
       model.currentCity.poi.push(newPoi);
       view.renderPoi();
+    }
+  },
+
+  async loadCityPOIs(cityId) {
+    try {
+      const response = await fetch(`${API_URL}/${cityId}/poi`);
+      if (!response.ok) throw new Error("Failed to fetch POIs");
+
+      const pois = await response.json();
+      model.currentCity.poi = pois; // Store POIs for the selected city
+    } catch (error) {
+      console.error("Error loading POIs:", error.message);
+      alert("Unable to load POIs for this city.");
     }
   },
 

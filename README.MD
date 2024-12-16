@@ -28,16 +28,6 @@ You can read more about the MVC pattern [here](https://en.wikipedia.org/wiki/Mod
 
 ---
 
-### Files and Folders
-- **index.html** : The main HTML file for the app's structure.
- 
-- **styles.css** : Contains all styles for layout and design.
- 
-- **app.js** : The core JavaScript file handling logic and dynamic rendering.
-
-
----
-
 ## How It Works
 
 #### 1. Data Model
@@ -111,3 +101,66 @@ The view handles DOM updates:
     ```
    - New POIs are dynamically added to the model and rendered without refreshing the page.
 
+
+---
+
+## Section 1: Doing Simple REST Calls
+Modern applications often retrieve data from external sources via REST APIs. REST (Representational State Transfer) is a protocol that allows applications to interact with servers to fetch or manipulate data.
+
+In this project:
+ 
+1. **Weather API** : 
+   - We use the **Open-Meteo API**  to fetch the current temperature of a city based on its GPS coordinates.
+   - Example code for fetching the weather data:
+    ```javascript
+    const fetchCurrentTemperature = async (latitude, longitude) => {
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`;
+    const response = await fetch(url);
+    const data = await response.json();
+    return data.current_weather.temperature;
+    };
+    ```
+ 
+  - **Key Points** : 
+     - Using [fetch](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) .
+     - `async/await` [ `async/await`](https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises),
+
+---
+
+## Section 2: Loading Data on Demand
+In addition to fetching external data like weather, you can dynamically load content for your application. For example, we load the list of cities and their POIs from a REST API instead of storing them locally.
+**Cities and POIs API** We use a **MockAPI endpoint**  to load cities and their points of interest dynamically. Endpoints include: 
+- **`GET /cities`** : Fetches all cities.
+- **`GET /cities/:id/poi`** : Fetches POIs for a specific city.
+
+Example for loading cities dynamically:
+
+
+```javascript
+const API_URL = 'https://6760a8686be7889dc35e8feb.mockapi.io/cities';
+
+const loadCities = async () => {
+  const response = await fetch(API_URL);
+  const cities = await response.json();
+  model.cities = cities;
+};
+```
+
+### Key Points: 
+ 
+1. **Cities are loaded on application startup** : 
+  - Data is fetched from the `/cities` endpoint using the `fetch` API.
+ 
+  - Once fetched, the data is stored in the `model.cities` array and rendered dynamically.
+ 
+2. **POIs are loaded on demand** : 
+  - When a city is selected, the app fetches POIs for that city using the `/cities/:id/poi` endpoint.
+
+
+```javascript
+const loadCityPOIs = async (cityId) => {
+  const response = await fetch(`${API_URL}/${cityId}/poi`);
+  const pois = await response.json();
+  model.currentCity.poi = pois;
+};
+```
