@@ -1,3 +1,5 @@
+// We are using a service called https://mockapi.io/ for all data.
+// It allows to work as a "simple database". Feel free to "clone" the porject at: https://mockapi.io/clone/6760a8686be7889dc35e8fec
 const API_URL = "https://6760a8686be7889dc35e8feb.mockapi.io/cities";
 
 // ---- Data Model ----
